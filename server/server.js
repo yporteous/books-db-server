@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const express = require('express')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const {ObjectID} = require('mongodb')
 
 const {mongoose} = require('./db/mongoose')
@@ -11,8 +12,9 @@ const app = express()
 const port = 3000
 
 app.use(bodyParser.json())
+app.use(cors())
 
-app.post('/books', (req, res) => {
+app.post('/books', (req, res, next) => {
   let book = new Book({
     title: req.body.title,
     author: req.body.author
@@ -25,7 +27,7 @@ app.post('/books', (req, res) => {
   })
 })
 
-app.get('/books', (req, res) => {
+app.get('/books', (req, res, next) => {
   Book.find().then(books => {
     res.send(books)
   }, e => {
@@ -35,7 +37,7 @@ app.get('/books', (req, res) => {
 
 // using async/await syntax on this one for variety
 // TODO: decide which to go with fully
-app.delete('/books/:id', async (req, res) => {
+app.delete('/books/:id', async (req, res, next) => {
   const id = req.params.id
 
   if (!ObjectID.isValid(id)) {
@@ -55,7 +57,7 @@ app.delete('/books/:id', async (req, res) => {
   res.send()
 })
 
-app.patch('/books/:id', (req, res) => {
+app.patch('/books/:id', (req, res, next) => {
   const id = req.params.id
 
   if (!ObjectID.isValid(id)) {

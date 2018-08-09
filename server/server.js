@@ -35,6 +35,23 @@ app.get('/books', (req, res, next) => {
   })
 })
 
+app.get('/books/:id', (req, res, next) => {
+  const id = req.params.id
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send()
+  }
+
+  Book.findById(id).then(book => {
+    if (!book) {
+      return res.status(404).send()
+    }
+    res.send(book)
+  }, e => {
+    res.status(400).send(e)
+  })
+})
+
 // using async/await syntax on this one for variety
 // TODO: decide which to go with fully
 app.delete('/books/:id', async (req, res, next) => {

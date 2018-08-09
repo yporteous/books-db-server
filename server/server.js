@@ -29,7 +29,7 @@ app.post('/books', (req, res, next) => {
 
 app.get('/books', (req, res, next) => {
   Book.find().then(books => {
-    res.send(books)
+    res.send(books.map(book => _.pick(book, ['_id', 'title', 'author']))) // limit to core data with full list
   }, e => {
     res.status(400).send(e)
   })

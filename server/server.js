@@ -7,7 +7,6 @@ const {ObjectID} = require('mongodb')
 const {mongoose} = require('./db/mongoose')
 const {Book} = require('./models/book')
 
-
 const app = express()
 const port = 3000
 
@@ -29,7 +28,7 @@ app.post('/books', (req, res, next) => {
 
 app.get('/books', (req, res, next) => {
   Book.find().then(books => {
-    res.send(books.map(book => _.pick(book, ['_id', 'title', 'author']))) // limit to core data with full list
+    res.send(books.map(book => _.pick(book, ['_id', 'title', 'author', 'tags'])))
   }, e => {
     res.status(400).send(e)
   })

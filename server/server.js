@@ -10,6 +10,8 @@ const {Book} = require('./models/book')
 const app = express()
 const port = 3000
 
+const LIST_PROPS = ['_id', 'title', 'author', 'tags', 'shelf']
+
 app.use(bodyParser.json())
 app.use(cors())
 
@@ -28,7 +30,7 @@ app.post('/books', (req, res, next) => {
 
 app.get('/books', (req, res, next) => {
   Book.find().then(books => {
-    res.send(books.map(book => _.pick(book, ['_id', 'title', 'author', 'tags'])))
+    res.send(books.map(book => _.pick(book, LIST_PROPS)))
   }, e => {
     res.status(400).send(e)
   })

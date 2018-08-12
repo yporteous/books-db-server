@@ -15,8 +15,11 @@ const LIST_PROPS = ['_id', 'title', 'author', 'tags', 'shelf']
 app.use(bodyParser.json())
 app.use(cors())
 
+app.get('/', (req, res, next) => {
+  res.redirect('http://localhost:8080/')
+})
+
 app.post('/books', (req, res, next) => {
-  console.log(req.body)
   let book = new Book(req.body.book)
 
   book.save().then(doc => {
@@ -76,13 +79,14 @@ app.delete('/books/:id', async (req, res, next) => {
 
 app.patch('/books/:id', (req, res, next) => {
   const id = req.params.id
+  const newBook = req.body.book
 
   if (!ObjectID.isValid(id)) {
     return res.status(404).send()
   }
 
   Book.findByIdAndUpdate(id, {
-    $set: body
+    $set: newBook
   }, {
     new: true
   }).then(book => {

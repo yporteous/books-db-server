@@ -16,14 +16,13 @@ app.use(bodyParser.json())
 app.use(cors())
 
 app.post('/books', (req, res, next) => {
-  let book = new Book({
-    title: req.body.title,
-    author: req.body.author
-  })
+  console.log(req.body)
+  let book = new Book(req.body.book)
 
   book.save().then(doc => {
     res.send(doc)
   }, e => {
+    console.log(e)
     res.status(400).send(e)
   })
 })

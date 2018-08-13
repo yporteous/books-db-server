@@ -69,12 +69,10 @@ app.delete('/books/:id', async (req, res, next) => {
     if (!book) {
       return res.status(404).send()
     }
-    res.send(book)
+    return res.send(book)
   } catch (e) {
-    res.status(400).send()
+    return res.status(400).send()
   }
-
-  res.send()
 })
 
 app.patch('/books/:id', (req, res, next) => {

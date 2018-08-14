@@ -6,6 +6,7 @@ const {ObjectID} = require('mongodb')
 
 const {mongoose} = require('./db/mongoose')
 const {Book} = require('./models/book')
+const {User} = require('./models/user')
 
 const app = express()
 const port = 3000
@@ -94,6 +95,25 @@ app.patch('/books/:id', (req, res, next) => {
     res.send({book})
   }).catch(e => {
     res.status(400).send()
+  })
+})
+
+app.get('/users', (req, res, next) => {
+  User.find().then(users => {
+    console.log(users)
+    res.send(users)
+  }, e => {
+    res.status(400).send(e)
+  })
+})
+
+app.post('/users', (req, res, next) => {
+  let user = new User(req.body.user)
+
+  user.save().then(doc => {
+    res.send(doc)
+  }, e => {
+    res.status(400).send(e)
   })
 })
 

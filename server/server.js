@@ -23,7 +23,7 @@ app.get('/', (req, res, next) => {
   res.redirect('http://localhost:8080/')
 })
 
-app.post('/books', (req, res, next) => {
+app.post('/books', (req, res) => {
   let book = new Book(req.body.book)
 
   book.save().then(doc => {
@@ -34,7 +34,7 @@ app.post('/books', (req, res, next) => {
   })
 })
 
-app.get('/books', (req, res, next) => {
+app.get('/books', (req, res) => {
   Book.find().then(books => {
     res.send(books.map(book => _.pick(book, LIST_PROPS)))
   }, e => {
@@ -42,7 +42,7 @@ app.get('/books', (req, res, next) => {
   })
 })
 
-app.get('/books/:id', (req, res, next) => {
+app.get('/books/:id', (req, res) => {
   const id = req.params.id
 
   if (!ObjectID.isValid(id)) {
@@ -61,7 +61,7 @@ app.get('/books/:id', (req, res, next) => {
 
 // using async/await syntax on this one for variety
 // TODO: decide which to go with fully
-app.delete('/books/:id', async (req, res, next) => {
+app.delete('/books/:id', async (req, res) => {
   const id = req.params.id
 
   if (!ObjectID.isValid(id)) {
@@ -79,7 +79,7 @@ app.delete('/books/:id', async (req, res, next) => {
   }
 })
 
-app.patch('/books/:id', (req, res, next) => {
+app.patch('/books/:id', (req, res) => {
   const id = req.params.id
   const newBook = req.body.book
 

@@ -44,6 +44,10 @@ const Book = mongoose.model('Book', {
     minlength: 1,
     trim: true
   },
+  _owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  }
 })
 
 module.exports = {

@@ -11,7 +11,11 @@ let authenticate = (req, res, next) => {
     req.token = token
     next()
   }).catch((e) => {
-    res.status(401).send()
+    if (req.method === 'GET') {
+      res.redirect('http://localhost:8080/login')
+    } else {
+      res.status(401).send()
+    }
   })
 }
 

@@ -1,0 +1,7 @@
+{
+  "development": {
+    "PORT": 3000,
+    "MONGODB_URI": "mongodb://localhost:27017/LibraryApp",
+    "JWT_SECRET": "dohcsl3rqy8j054lse30ckg83dmpvjtg"
+  }
+}

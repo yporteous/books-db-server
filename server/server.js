@@ -17,14 +17,30 @@ const port = 3000
 const LIST_PROPS = ['_id', 'title', 'author', 'tags', 'shelf']
 
 app.use(bodyParser.json())
-app.use(cors())
 
-app.get('/', (req, res, next) => {
+let whitelist = ['http://localhost:8080']
+
+function corsOptionsDelegate (req, callback) {
+  let corsOptions = {
+    exposedHeaders: ['x-auth'],
+    origin: false
+  };
+  if (whitelist.indexOf(req.header('Origin')) !== -1) {
+    corsOptions.origin = true
+  }
+  callback(null, corsOptions)
+}
+
+app.use(cors(corsOptionsDelegate))
+
+app.get('/', (req, res) => {
   res.redirect('http://localhost:8080/')
 })
 
-app.post('/books', (req, res) => {
+// BOOKS
+app.post('/books', authenticate, (req, res) => {
   let book = new Book(req.body.book)
+  book._creator = req.user._id
 
   book.save().then(doc => {
     res.send(doc)
@@ -34,22 +50,25 @@ app.post('/books', (req, res) => {
   })
 })
 
-app.get('/books', (req, res) => {
-  Book.find().then(books => {
+app.get('/books', authenticate, (req, res) => {
+  Book.find({ _creator: req.user._id }).then(books => {
     res.send(books.map(book => _.pick(book, LIST_PROPS)))
   }, e => {
     res.status(400).send(e)
   })
 })
 
-app.get('/books/:id', (req, res) => {
+app.get('/books/:id', authenticate, (req, res) => {
   const id = req.params.id
 
   if (!ObjectID.isValid(id)) {
     return res.status(404).send()
   }
 
-  Book.findById(id).then(book => {
+  Book.findOne({
+    _id: id,
+    _creator: req.user._id
+  }).then(book => {
     if (!book) {
       return res.status(404).send()
     }
@@ -61,7 +80,7 @@ app.get('/books/:id', (req, res) => {
 
 // using async/await syntax on this one for variety
 // TODO: decide which to go with fully
-app.delete('/books/:id', async (req, res) => {
+app.delete('/books/:id', authenticate, async (req, res) => {
   const id = req.params.id
 
   if (!ObjectID.isValid(id)) {
@@ -69,7 +88,10 @@ app.delete('/books/:id', async (req, res) => {
   }
 
   try {
-    const book = await Book.findByIdAndDelete(id)
+    const book = await Book.findOneAndDelete({
+      _id: id,
+      _creator: req.user._id
+    })
     if (!book) {
       return res.status(404).send()
     }
@@ -79,7 +101,7 @@ app.delete('/books/:id', async (req, res) => {
   }
 })
 
-app.patch('/books/:id', (req, res) => {
+app.patch('/books/:id', authenticate, (req, res) => {
   const id = req.params.id
   const newBook = req.body.book
 
@@ -87,7 +109,10 @@ app.patch('/books/:id', (req, res) => {
     return res.status(404).send()
   }
 
-  Book.findByIdAndUpdate(id, {
+  Book.findOneAndUpdate({
+    _id: id,
+    _creator: req.user._id
+  }, {
     $set: newBook
   }, {
     new: true
@@ -101,13 +126,17 @@ app.patch('/books/:id', (req, res) => {
   })
 })
 
+// SHELVES
 app.get('/shelves', authenticate, (req, res) => {
   res.send(req.user.shelves)
 })
 
+// USERS
 app.post('/users', async (req, res) => {
+  console.log(req.body)
   try {
     const user = new User(_.pick(req.body.user, ['username', 'password', 'shelves']))
+    console.log(JSON.stringify(user, undefined, 2))
     await user.save()
     const token = await user.generateAuthToken()
     res.header('x-auth', token).send(user)

@@ -128,15 +128,13 @@ app.patch('/books/:id', authenticate, (req, res) => {
 
 // SHELVES
 app.get('/shelves', authenticate, (req, res) => {
-  res.send(req.user.shelves)
+  res.send({shelves: req.user.shelves})
 })
 
 // USERS
 app.post('/users', async (req, res) => {
-  console.log(req.body)
   try {
     const user = new User(_.pick(req.body.user, ['username', 'password', 'shelves']))
-    console.log(JSON.stringify(user, undefined, 2))
     await user.save()
     const token = await user.generateAuthToken()
     res.header('x-auth', token).send(user)

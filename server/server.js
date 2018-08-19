@@ -69,7 +69,7 @@ app.get('/books/:id', authenticate, (req, res) => {
 
   Book.findOne({
     _id: id,
-    _creator: req.user._id
+    _owner: req.user._id
   }).then(book => {
     if (!book) {
       return res.status(404).send()
@@ -92,7 +92,7 @@ app.delete('/books/:id', authenticate, async (req, res) => {
   try {
     const book = await Book.findOneAndDelete({
       _id: id,
-      _creator: req.user._id
+      _owner: req.user._id
     })
     if (!book) {
       return res.status(404).send()
@@ -113,7 +113,7 @@ app.patch('/books/:id', authenticate, (req, res) => {
 
   Book.findOneAndUpdate({
     _id: id,
-    _creator: req.user._id
+    _owner: req.user._id
   }, {
     $set: newBook
   }, {

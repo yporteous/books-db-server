@@ -131,6 +131,17 @@ app.get('/shelves', authenticate, (req, res) => {
   res.send({shelves: req.user.shelves})
 })
 
+app.post('/shelves', authenticate, (req, res) => {
+  let shelves = req.body.shelves
+  User.findByIdAndUpdate(req.user._id, {
+    $set: {shelves}
+  }).then(user => {
+    res.send({shelves: user.shelves})
+  }, e => {
+    res.status(400).send(e)
+  })
+})
+
 // USERS
 app.post('/users', async (req, res) => {
   try {

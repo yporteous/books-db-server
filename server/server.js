@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
 // BOOKS
 app.post('/books', authenticate, (req, res) => {
   let book = new Book(req.body.book)
-  book._creator = req.user._id
+  book._owner = req.user._id
 
   book.save().then(doc => {
     res.send(doc)
@@ -51,8 +51,10 @@ app.post('/books', authenticate, (req, res) => {
 })
 
 app.get('/books', authenticate, (req, res) => {
-  Book.find({ _creator: req.user._id }).then(books => {
-    res.send(books.map(book => _.pick(book, LIST_PROPS)))
+  Book.find({ _owner: req.user._id }).then(books => {
+    res.send({
+      books: books.map(book => _.pick(book, LIST_PROPS))
+    })
   }, e => {
     res.status(400).send(e)
   })

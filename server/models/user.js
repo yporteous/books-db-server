@@ -25,17 +25,23 @@ const UserSchema = new mongoose.Schema({
       required: true
     }
   }],
-  shelves: {
-    type: [String],
-    default: ['All']
-  }
+  shelves: [{
+    name: {
+      type: String,
+      required: true
+    },
+    colour: {
+      type: String,
+      required: true
+    }
+  }]
 })
 
 UserSchema.methods.toJSON = function () {
   let user = this
   let userObject = user.toObject()
 
-  return _.pick(userObject, ['_id', 'username', 'shelves'])
+  return _.pick(userObject, ['_id', 'username', 'shelves', 'shelfColours'])
 }
 
 UserSchema.methods.generateAuthToken = function () {

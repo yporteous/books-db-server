@@ -23,12 +23,12 @@ let whitelist = ['http://localhost:8080']
 function corsOptionsDelegate (req, callback) {
   let corsOptions = {
     exposedHeaders: ['x-auth'],
-    origin: false
+    origin: true
   };
   // if (whitelist.indexOf(req.header('Origin')) !== -1) {
   //   corsOptions.origin = true
   // }
-  corsOptions.origin = true
+  // corsOptions.origin = true
   callback(null, corsOptions)
 }
 

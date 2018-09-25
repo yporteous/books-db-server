@@ -25,9 +25,10 @@ function corsOptionsDelegate (req, callback) {
     exposedHeaders: ['x-auth'],
     origin: false
   };
-  if (whitelist.indexOf(req.header('Origin')) !== -1) {
-    corsOptions.origin = true
-  }
+  // if (whitelist.indexOf(req.header('Origin')) !== -1) {
+  //   corsOptions.origin = true
+  // }
+  corsOptions.origin = true
   callback(null, corsOptions)
 }
 

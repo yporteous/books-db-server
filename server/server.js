@@ -16,16 +16,15 @@ const port = process.env.PORT
 
 const LIST_PROPS = ['_id', 'title', 'author', 'tags', 'shelf']
 
-app.use(bodyParser.json())
-
-let whitelist = ['http://localhost:8080']
-
 let corsOptions = {
   exposedHeaders: ['x-auth'],
 }
 app.use(cors(corsOptions))
+app.use(bodyParser.json())
 
-app.options('*', cors())
+let whitelist = ['http://localhost:8080']
+
+app.options('*', cors(corsOptions))
 
 app.get('/', (req, res) => {
   res.redirect('http://localhost:8080/')

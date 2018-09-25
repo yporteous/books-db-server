@@ -12,7 +12,7 @@ const {User} = require('./models/user')
 const {authenticate} = require('./middleware/authenticate')
 
 const app = express()
-const port = 3000
+const port = process.env.PORT
 
 const LIST_PROPS = ['_id', 'title', 'author', 'tags', 'shelf']
 
@@ -20,16 +20,12 @@ app.use(bodyParser.json())
 
 let whitelist = ['http://localhost:8080']
 
-function corsOptionsDelegate (req, callback) {
-  let corsOptions = {
-    exposedHeaders: ['x-auth'],
-  };
-  callback(null, corsOptions)
+let corsOptions = {
+  exposedHeaders: ['x-auth'],
 }
+app.use(cors(corsOptions))
 
-app.use(cors())
-
-// app.options('*', cors())
+app.options('*', cors())
 
 app.get('/', (req, res) => {
   res.redirect('http://localhost:8080/')

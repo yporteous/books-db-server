@@ -27,9 +27,9 @@ function corsOptionsDelegate (req, callback) {
   callback(null, corsOptions)
 }
 
-app.use(cors(corsOptionsDelegate))
+app.use(cors())
 
-app.options('*', cors())
+// app.options('*', cors())
 
 app.get('/', (req, res) => {
   res.redirect('http://localhost:8080/')

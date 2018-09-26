@@ -143,7 +143,7 @@ app.post('/users', async (req, res) => {
     const user = new User(_.pick(req.body.user, ['username', 'password', 'shelves']))
     await user.save()
     const token = await user.generateAuthToken()
-    res.header('x-auth', token).send(user)
+    res.header('X-Auth', token).send(user)
   } catch (e) {
     res.status(400).send(e)
   }
@@ -158,7 +158,7 @@ app.post('/users/login', async (req, res) => {
     const body = _.pick(req.body.user, ['username', 'password'])
     const user = await User.findByCredentials(body.username, body.password)
     const token = await user.generateAuthToken()
-    res.header('x-auth', token).send(user)
+    res.header('X-Auth', token).send(user)
   } catch (e) {
     res.status(400).send()
   }

@@ -101,6 +101,10 @@ UserSchema.statics.findByCredentials = function (username, password) {
 UserSchema.pre('save', function (next) {
   let user = this
 
+  if (!user.shelves.length) {
+    user.shelves.push({ name: 'All', colour: '#ccc' })
+  }
+
   if (user.isModified('password')) {
     bcrypt.genSalt(10, (error, salt) => {
       bcrypt.hash(user.password, salt, (error, hash) => {
